@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            padding: 20px;
+            color: white;
+        }
+
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #34495e;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .sidebar button:hover {
+            background-color: #1abc9c;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .pet-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .task-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .task-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* 用户信息样式 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .user-info span {
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 左侧导航栏 -->
+    <div class="sidebar">
+        <div class="user-info" id="userInfo">
+            <img src="https://via.placeholder.com/50" alt="User Avatar" id="userAvatar">
+            <span id="userName">Player Name</span>
+        </div>
+        <h3>Menu</h3>
+        <button onclick="showPage('home')">Home</button>
+        <button onclick="showPage('tasks')">Tasks</button>
+        <button onclick="showPage('leaderboard')">Leaderboard</button>
+    </div>
+
+    <!-- 右侧内容区域 -->
+    <div class="content" id="home">
+        <h2>Your Virtual Pet</h2>
+        <img src="pet.png" alt="Your Pet" class="pet-image">
+        <p>Level: 1</p>
+        <p>Experience: 50/100</p>
+    </div>
+
+    <div class="content" id="tasks">
+        <h2>Tasks</h2>
+        <p>Join our Telegram group to earn 10 XP.</p>
+        <button class="task-button" onclick="completeGroupTask()">Join Group</button>
+        <p>Log in every day to earn 10 XP.</p>
+        <button class="task-button" onclick="completeDailyTask()">Log in</button>
+    </div>
+
+    <div class="content" id="leaderboard">
+        <h2>Leaderboard</h2>
+        <div id="leaderboardList"></div>
+    </div>
+
+    <script>
+        // Telegram Web App API 逻辑
+        let tg = window.Telegram.WebApp;
+
+        // 获取用户信息并显示在页面上
+        function initUserInfo() {
+            const user = tg.initDataUnsafe.user;
+            if (user) {
+                document.getElementById('userName').innerText = user.first_name;
+                document.getElementById('userAvatar').src = `https://t.me/i/userpic/${user.id}`;
+            }
+        }
+
+        // 页面切换逻辑
+        function showPage(pageId) {
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const page = document.getElementById(pageId);
+            if (page) {
+                page.classList.add('active');
+            }
+        }
+
+        // 初始化用户信息
+        initUserInfo();
+        document.getElementById('home').classList.add('active');
+
+        // 示例排行榜数据
+        const leaderboardData = [
+            { name: 'Alice', xp: 200, avatar: 'https://via.placeholder.com/50' },
+            { name: 'Bob', xp: 150, avatar: 'https://via.placeholder.com/50' },
+            { name: 'Charlie', xp: 100, avatar: 'https://via.placeholder.com/50' },
+        ];
+
+        // 显示排行榜
+        function displayLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            leaderboardList.innerHTML = ''; // 清空当前的列表
+
+            leaderboardData.forEach(player => {
+                const playerItem = document.createElement('div');
+                playerItem.innerHTML = `
+                    <img src="${player.avatar}" alt="${player.name}'s Avatar" width="30" height="30" style="border-radius:50%; margin-right:10px;">
+                    ${player.name} - ${player.xp} XP
+                `;
+                leaderboardList.appendChild(playerItem);
+            });
+        }
+
+        // 显示排行榜
+        displayLeaderboard();
+
+        // 任務邏輯
+        function completeGroupTask() {
+            console.log("Group Task Clicked");
+            // 示例：模拟任务完成逻辑（仅执行一次）
+            const groupTaskButton = document.querySelector('.task-button[onclick="completeGroupTask()"]');
+            groupTaskButton.disabled = true;
+            groupTaskButton.innerText = "Task Completed";
+            alert('You joined the Telegram group and earned 10 XP!');
+        }
+
+        function completeDailyTask() {
+            console.log("Daily Task Clicked");
+            // 示例：模拟每日任务逻辑（一天只能完成一次）
+            const dailyTaskButton = document.querySelector('.task-button[onclick="completeDailyTask()"]');
+            dailyTaskButton.disabled = true;
+            dailyTaskButton.innerText = "Task Completed";
+            alert('You logged in today and earned 10 XP!');
+        }
+
+    </script>
+
+</body>
+</html>
