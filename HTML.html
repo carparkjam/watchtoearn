@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pet Game</title>
@@ -63,18 +64,29 @@
         }
 
         .task-button {
-            background-color: #3498db;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
             color: white;
-            padding: 10px 15px;
             border: none;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
-            width: 100%; /* 让按钮填满可用空间 */
-        }
+            text-decoration: none;
+            width: 200px; /* 控制按钮宽度 */
+            box-sizing: border-box; /* 确保 padding 不影响宽度 */
+}
 
-        .task-button:hover {
-            background-color: #2980b9;
-        }
+         .task-button:hover {
+            background-color: #0056b3;
+}
+
+         .task-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+}
+
 
         /* 用户信息样式 */
         .user-info {
@@ -130,15 +142,20 @@
         <img src="pet.png" alt="Your Pet" class="pet-image">
         <p>Level: 1</p>
         <p>Experience: 50/100</p>
+        <!-- 看廣告獲得經驗的按鈕 -->
+        <button class="task-button" onclick="showAd()">Watch Ad to Gain 10XP</button>
+    
+        
     </div>
 
     <div class="content" id="tasks">
         <h2>Tasks</h2>
         <p>Join our Telegram group to earn 10 XP.</p>
-        <button class="task-button" onclick="completeGroupTask()">Join Group</button>
+        <a href="https://t.me/freewatchtoearn" target="_blank" class="task-button" onclick="completeGroupTask()">Join Group</a>
         <p>Log in every day to earn 10 XP.</p>
         <button class="task-button" onclick="completeDailyTask()">Log in</button>
     </div>
+    
 
     <div class="content" id="leaderboard">
         <h2>Leaderboard</h2>
@@ -216,8 +233,18 @@
             dailyTaskButton.innerText = "Task Completed";
             alert('You logged in today and earned 10 XP!');
         }
+        
 
-    </script>
+        function showAd() {
+            const AdController = window.Adsgram.init({ blockId: "2557" });
+            AdController.show().then(() => {
+                alert('You earned XP!');
+            }).catch((error) => {
+                console.error('Ad failed to load or was skipped', error);
+            });
+        }
+</script>
+
 
 </body>
 </html>
