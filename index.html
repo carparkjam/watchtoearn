@@ -138,12 +138,11 @@
 
     <!-- 右侧内容区域 -->
     <div class="content" id="home">
-        <h2>Your Earning Pet</h2>
+        <h2>Your Virtual Pet</h2>
         <img src="pet.png" alt="Your Pet" class="pet-image">
         <p>Level: 1</p>
         <p>Experience: 50/100</p>
-        <!-- 看廣告獲得經驗的按鈕 -->
-        <button class="task-button" onclick="showAd()">Watch Ad to Gain 10XP</button>
+
     
         
     </div>
@@ -152,9 +151,15 @@
         <h2>Tasks</h2>
         <p>Join our Telegram group to earn 10 XP.</p>
         <a href="https://t.me/freewatchtoearn" target="_blank" class="task-button" onclick="completeGroupTask()">Join Group</a>
-        <p>Log in every day to earn 10 XP.</p>
-        <button class="task-button" onclick="completeDailyTask()">Log in</button>
+    <!-- 每天登入任務區域 -->
+    <div class="task" id="daily-login-task">
+        <p>Log in daily to earn 10 XP!</p>
+        <button class="task-button" onclick="completeDailyLogin()">Log In</button>
+
+    <!-- 添加觀看廣告獲得 2 倍經驗的按鈕 -->
+        <button class="task-button" onclick="watchAdForDoubleXP()">Watch Ad for Double XP</button>
     </div>
+
     
 
     <div class="content" id="leaderboard">
@@ -226,13 +231,45 @@
             alert('You joined the Telegram group and earned 10 XP!');
         }
 
-        function completeDailyTask() {
-            console.log("Daily Task Clicked");
-            const dailyTaskButton = document.querySelector('.task-button[onclick="completeDailyTask()"]');
-            dailyTaskButton.disabled = true;
-            dailyTaskButton.innerText = "Task Completed";
-            alert('You logged in today and earned 10 XP!');
+        // 完成每天登入的基本獎勵
+        function completeDailyLogin() {
+        // 確保用戶沒有重複完成此任務
+        if (localStorage.getItem('dailyLoginCompleted')) {
+        alert("You have already completed today's login task.");
+        return;
         }
+
+        // 獲得經驗值
+        gainExperience(10); // 正常獲得 10 XP
+        localStorage.setItem('dailyLoginCompleted', true); // 設置任務已完成標記
+        alert("You have earned 10 XP for logging in today!");
+        }
+
+        // 觀看廣告以獲得雙倍經驗
+        function watchAdForDoubleXP() {
+        const AdController = window.Adsgram.init({ blockId: "2557" });
+        AdController.show().then(() => {
+        // 確保用戶沒有重複完成此任務
+        if (localStorage.getItem('dailyLoginCompleted')) {
+            gainExperience(20); // 獲得 2 倍的經驗，即 20 XP
+            alert("You have earned double XP (20 XP) for watching the ad!");
+        } else {
+            alert("You need to complete the daily login task first!");
+        }
+        }).catch((error) => {
+        console.error('Ad failed to load or was skipped', error);
+        alert("Ad failed to load or was skipped.");
+        });
+        }
+
+        // 增加經驗值的函數
+        function gainExperience(amount) {
+        let currentXP = parseInt(localStorage.getItem('userXP')) || 0;
+        currentXP += amount;
+        localStorage.setItem('userXP', currentXP);
+        updateXPDisplay(currentXP); // 更新頁面上顯示的經驗值
+        }
+
         
 
         function showAd() {
